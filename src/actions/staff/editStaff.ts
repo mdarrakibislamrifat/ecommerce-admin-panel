@@ -72,23 +72,28 @@ export async function editStaff(
     }
   }
 
-  const { data: updatedStaff, error: dbError } = await supabase
+const { data: updatedStaff, error: dbError } = await supabase
     .from("staff")
     .update({
       name: staffData.name,
       phone: staffData.phone,
       ...(imageUrl && { image_url: imageUrl }),
     })
-    .eq("id", staffId)
-    .select()
-    .single();
+    .eq("id", staffId) 
+    .select(); 
 
   if (dbError) {
     console.error("Database update failed:", dbError);
     return { dbError: "Something went wrong. Please try again later." };
   }
 
-  revalidatePath("/staff");
+  if (!updatedStaff || updatedStaff.length === 0) {
+    console.error("No rows were updated. Check if the staffId is correct.");
+    return { dbError: "User profile not found in database." };
+  }
 
-  return { success: true, staff: updatedStaff };
+  revalidatePath("/staff");
+  revalidatePath("/edit-profile"); 
+
+  return { success: true, staff: updatedStaff[0] };
 }

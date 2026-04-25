@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Settings, LogOut, LayoutGrid } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 
+
 export default function Profile() {
   const { profile } = useUser();
 
